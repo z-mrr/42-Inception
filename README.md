@@ -67,7 +67,7 @@ Verify that you can run ```docker``` commands without ```sudo```
 docker run hello-world
 ```
 If you get ```WARNING: Error loading config file: /home/user/.docker/config.json -
-stat /home/user/.docker/config.json: permission denied``` do 
+stat /home/user/.docker/config.json: permission denied```
 ```
 sudo rm -rf ~/.docker/
 ```
