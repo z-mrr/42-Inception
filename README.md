@@ -46,7 +46,15 @@ Verify that the Docker Engine installation is successful by running the hello-wo
 sudo docker run hello-world
 ```
 #### Manage Docker as non-root user
-Create the docker group
+Check if docker group exists and if the user is on it
+```
+cat /etc/group | grep docker
+```
+Add user to ```docker``` group if it exists
+```
+usermod -aG docker $USER
+```
+If it doesn't exist, create the ```docker``` group
 ```
 sudo groupadd docker
 ```
