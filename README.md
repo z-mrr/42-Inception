@@ -48,11 +48,7 @@ sudo docker run hello-world
 #### Manage Docker as non-root user
 Check if ```docker``` group exists and if the user is on it
 ```
-cat /etc/group | grep docker
-```
-Add user to ```docker``` group if it exists
-```
-usermod -aG docker $USER
+sudo cat /etc/group | grep docker
 ```
 If it doesn't exist, create the ```docker``` group
 ```
