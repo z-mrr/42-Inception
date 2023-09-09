@@ -46,6 +46,7 @@ Verify that the Docker Engine installation is successful by running the hello-wo
 sudo docker run hello-world
 ```
 Manage Docker as non-root user
+<br>
   Create the docker group
 ```
 sudo groupadd docker
