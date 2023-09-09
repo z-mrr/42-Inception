@@ -45,3 +45,22 @@ Verify that the Docker Engine installation is successful by running the hello-wo
 ```
 sudo docker run hello-world
 ```
+Manage Docker as non-root user
+  Create the docker group
+```
+sudo groupadd docker
+```
+  Add user to the ```docker``` group
+```
+sudo usermod -aG docker $USER
+```
+  Reboot or 
+```
+newgrp docker
+```
+  Verify that you can run ```docker``` commands without ```sudo```
+```
+docker run hello-world
+```
+
+
