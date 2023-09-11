@@ -76,14 +76,8 @@ Domain name
 ```
 sudo sh -c 'echo "127.0.0.1 jdias-mo.42.fr" >> /etc/hosts'
 ```
-#### TLS
-Generate a Certificate Signing Request (CSR)
-```
-openssl req -new -newkey rsa:2048 -nodes -keyout example.com.key -out example.com.csr
-
-```
-
-Dockerfile
+#### Dockerfile
+``òpenssl``` to generate self-signed SSL certificate and key
 ```
 echo 'FROM debian:bullseye
 RUN apt-get update
@@ -95,7 +89,8 @@ COPY conf/default.conf /etc/nginx/conf.d/default.conf
 ENTRYPOINT nginx -g "daemon off;"
 ' > Dockerfile
 ```
-Conf file
+#### Conf file
+```TLSv1.3``` only
 ```
 echo 'server {
     listen       443 ssl;
@@ -104,7 +99,7 @@ echo 'server {
 
     ssl_certificate /etc/nginx/ssl/jdias-mo.crt;
     ssl_certificate_key /etc/nginx/ssl/jdias-mo.key;
-    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_protocols TLSv1.3;
 
     #access_log  /var/log/nginx/host.access.log  main;
 
