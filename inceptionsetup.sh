@@ -1,5 +1,4 @@
 #!/bin/sh
-# Check if the current user is in the sudo group
 if groups "$USER" | grep &>/dev/null "\bsudo\b"; then
     echo "Setting up Inception..."
 else
