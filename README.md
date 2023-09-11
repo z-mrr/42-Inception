@@ -78,11 +78,9 @@ sudo sh -c 'echo "127.0.0.1 jdias-mo.42.fr" >> /etc/hosts'
 ```
 Dockerfile
 ```
-echo ' \
-FROM debian:bullseye \
-RUN apt-get update \
-RUN apt-get install nginx -y \
-COPY default.conf /etc/nginx/conf.d/default.conf \
-ENTRYPOINT nginx -g "daemon off;" \
-' > dockerfile
+echo 'FROM debian:bullseye
+RUN apt-get update
+RUN apt-get install nginx -y
+COPY default.conf /etc/nginx/conf.d/default.conf
+ENTRYPOINT nginx -g "daemon off;"' > dockerfile
 ```
