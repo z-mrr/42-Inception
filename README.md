@@ -77,7 +77,8 @@ Domain name
 sudo sh -c 'echo "127.0.0.1 jdias-mo.42.fr" >> /etc/hosts'
 ```
 Dockerfile
-```echo " \
+```
+echo " \
 FROM debian:bullseye \
 RUN apt-get update \
 RUN apt-get install nginx -y \
