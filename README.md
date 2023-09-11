@@ -77,7 +77,8 @@ Domain name
 sudo sh -c 'echo "127.0.0.1 jdias-mo.42.fr" >> /etc/hosts'
 ```
 #### Dockerfile
-```oenssl``` to generate self-signed SSL certificate and key
+```oenssl``` to generate self-signed SSL certificate and key<br>
+```daemon off``` to run on the foreground as it is in a container
 ```
 FROM debian:bullseye
 RUN apt-get update
