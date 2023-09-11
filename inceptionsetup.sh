@@ -1,16 +1,25 @@
 #!/bin/sh
-mkdir ~/srcs
-mkdir ~/srcs/requirements
-mkdir ~/srcs/requirements/mariadb
-mkdir ~/srcs/requirements/mariadb/conf
-mkdir ~/srcs/requirements/mariadb/tools
-mkdir ~/srcs/requirements/nginx
-mkdir ~/srcs/requirements/nginx/conf
-mkdir ~/srcs/requirements/nginx/tools
-mkdir ~/srcs/requirements/tools
-mkdir ~/srcs/requirements/wordpress
-mkdir ~/srcs/requirements/wordpress/conf
-mkdir ~/srcs/requirements/wordpress/tools
+# Check if the current user is in the sudo group
+if groups "$USER" | grep &>/dev/null "\bsudo\b"; then
+    echo "Setting up Inception..."
+else
+    echo "$USER is not a member of the sudo group. Exiting."
+    exit 1
+fi
+sudo apt-get update
+sudo apt-get install curl -y
+mkdir ~/Inception/srcs
+mkdir ~/Inception/srcs/requirements
+mkdir ~/Inception/srcs/requirements/mariadb
+mkdir ~/Inception/srcs/requirements/mariadb/conf
+mkdir ~/Inception/srcs/requirements/mariadb/tools
+mkdir ~/Inception/srcs/requirements/nginx
+mkdir ~/Inception/srcs/requirements/nginx/conf
+mkdir ~/Inception/srcs/requirements/nginx/tools
+mkdir ~/Inception/srcs/requirements/tools
+mkdir ~/Inception/srcs/requirements/wordpress
+mkdir ~/Inception/srcs/requirements/wordpress/conf
+mkdir ~/Inception/srcs/requirements/wordpress/tools
 sudo apt-get update
 sudo apt-get install ca-certificates curl gnupg
 sudo install -m 0755 -d /etc/apt/keyrings
@@ -30,7 +39,7 @@ RUN apt-get install openssl -y
 RUN mkdir /etc/nginx/ssl
 RUN openssl req -x509 -nodes -days 365 -new -keyout /etc/nginx/ssl/jdias-mo.key -out /etc/nginx/ssl/jdias-mo.crt -subj "/CN=jdias-mo/O=42/OU=42Porto/C=PT/ST=Porto/L=Porto/emailAddress=jdias-mo@student.42porto.com"
 COPY conf/default.conf /etc/nginx/conf.d/default.conf
-ENTRYPOINT nginx -g "daemon off;"' > ~/srcs/requirements/nginx/Dockerfile
+ENTRYPOINT nginx -g "daemon off;"' > ~/Inception/srcs/requirements/nginx/Dockerfile
 echo 'server {
     listen       443 ssl;
     listen  [::]:443 ssl;
@@ -78,4 +87,4 @@ echo 'server {
     #location ~ /\.ht {
     #    deny  all;
     #}
-}' > ~/srcs/requirements/nginx/conf/default.conf
+}' > ~/Inception/srcs/requirements/nginx/conf/default.conf
