@@ -1,5 +1,5 @@
 #!/bin/sh
-if groups "$USER" | grep &>/dev/null "\bsudo\b"; then
+if groups "$USER" | grep "\bsudo\b" &>/dev/null; then
     echo "Setting up Inception..."
 else
     echo "$USER is not a member of the sudo group. Exiting."
