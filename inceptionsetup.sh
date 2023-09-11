@@ -5,8 +5,6 @@ else
     echo "$USER is not a member of the sudo group. Exiting."
     exit 1
 fi
-sudo apt-get update
-sudo apt-get install curl -y
 mkdir ~/Inception/srcs
 mkdir ~/Inception/srcs/requirements
 mkdir ~/Inception/srcs/requirements/mariadb
@@ -20,6 +18,7 @@ mkdir ~/Inception/srcs/requirements/wordpress
 mkdir ~/Inception/srcs/requirements/wordpress/conf
 mkdir ~/Inception/srcs/requirements/wordpress/tools
 sudo apt-get update
+sudo apt-get install curl -y
 sudo apt-get install ca-certificates curl gnupg
 sudo install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
