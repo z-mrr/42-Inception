@@ -1,6 +1,6 @@
 ## 42-Inception
 ### Installing Docker on Ubuntu
-#### Remove conflitcts
+#### Remove conflitcts (skip if new VM)
 ```
 for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do sudo apt-get remove $pkg; done
 ```
@@ -71,5 +71,3 @@ stat /home/user/.docker/config.json: permission denied```
 ```
 sudo rm -rf ~/.docker/
 ```
-
-
