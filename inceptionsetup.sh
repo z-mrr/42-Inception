@@ -1,4 +1,16 @@
 #!/bin/sh
+mkdir ~/srcs
+mkdir ~/srcs/requirements
+mkdir ~/srcs/requirements/mariadb
+mkdir ~/srcs/requirements/mariadb/conf
+mkdir ~/srcs/requirements/mariadb/tools
+mkdir ~/srcs/requirements/nginx
+mkdir ~/srcs/requirements/nginx/conf
+mkdir ~/srcs/requirements/nginx/tools
+mkdir ~/srcs/requirements/tools
+mkdir ~/srcs/requirements/wordpress
+mkdir ~/srcs/requirements/wordpress/conf
+mkdir ~/srcs/requirements/wordpress/tools
 sudo apt-get update
 sudo apt-get install ca-certificates curl gnupg
 sudo install -m 0755 -d /etc/apt/keyrings
@@ -18,7 +30,7 @@ RUN apt-get install openssl -y
 RUN mkdir /etc/nginx/ssl
 RUN openssl req -x509 -nodes -days 365 -new -keyout /etc/nginx/ssl/jdias-mo.key -out /etc/nginx/ssl/jdias-mo.crt -subj "/CN=jdias-mo/O=42/OU=42Porto/C=PT/ST=Porto/L=Porto/emailAddress=jdias-mo@student.42porto.com"
 COPY conf/default.conf /etc/nginx/conf.d/default.conf
-ENTRYPOINT nginx -g "daemon off;"' > Dockerfile
+ENTRYPOINT nginx -g "daemon off;"' > ~/srcs/requirements/nginx/Dockerfile
 echo 'server {
     listen       443 ssl;
     listen  [::]:443 ssl;
@@ -66,4 +78,4 @@ echo 'server {
     #location ~ /\.ht {
     #    deny  all;
     #}
-}' > default.conf
+}' > ~/srcs/requirements/nginx/conf/default.conf
