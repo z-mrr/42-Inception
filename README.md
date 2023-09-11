@@ -79,7 +79,7 @@ sudo sh -c 'echo "127.0.0.1 jdias-mo.42.fr" >> /etc/hosts'
 #### Dockerfile
 ```oenssl``` to generate self-signed SSL certificate and key
 ```
-echo 'FROM debian:bullseye
+FROM debian:bullseye
 RUN apt-get update
 RUN apt-get install nginx -y
 RUN apt-get install openssl -y
@@ -87,12 +87,11 @@ RUN mkdir /etc/nginx/ssl
 RUN openssl req -x509 -nodes -days 365 -new -keyout /etc/nginx/ssl/jdias-mo.key -out /etc/nginx/ssl/jdias-mo.crt -subj "/CN=jdias-mo/O=42/OU=42Porto/C=PT/ST=Porto/L=Porto/emailAddress=jdias-mo@student.42porto.com"
 COPY conf/default.conf /etc/nginx/conf.d/default.conf
 ENTRYPOINT nginx -g "daemon off;"
-' > Dockerfile
 ```
 #### Conf file
 ```TLSv1.3``` only
 ```
-echo 'server {
+server {
     listen       443 ssl;
     listen  [::]:443 ssl;
     server_name  jdias-mo.42.fr;
@@ -140,5 +139,4 @@ echo 'server {
     #    deny  all;
     #}
 }
-' > default.conf
 ```
