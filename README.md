@@ -104,15 +104,18 @@ server {
     ssl_certificate /etc/nginx/ssl/jdias-mo.crt;
     ssl_certificate_key /etc/nginx/ssl/jdias-mo.key;
     ssl_protocols TLSv1.3;
-    
+
+    #every other uri
     location / {
         try_files $uri $uri/ /index.php?$args;
     }
-    
+
+    #uri ending in .php
     location ~ \.php$ {
         fastcgi_pass   wordpress:9000;
         fastcgi_index  index.php;
         fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
         include        fastcgi_params;
+    }
 }
 ```
