@@ -63,4 +63,5 @@ echo 'server {
         fastcgi_index  index.php;
         fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
         include        fastcgi_params;
+    }
 }' > ~/Inception/srcs/requirements/nginx/conf/default.conf
