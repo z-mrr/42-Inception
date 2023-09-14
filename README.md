@@ -81,7 +81,7 @@ sudo sh -c 'echo "127.0.0.1 jdias-mo.42.fr" >> /etc/hosts'
 ```daemon off``` to run on the foreground as it is in a container
 ```
 FROM debian:bullseye
-RUN apt-get update && apt-get install nginx openssl -y
+RUN apt-get update && apt-get -y install nginx openssl
 RUN mkdir /etc/nginx/ssl
 RUN openssl req -x509 -nodes -days 365 -new -keyout /etc/nginx/ssl/jdias-mo.key -out /etc/nginx/ssl/jdias-mo.crt -subj "/CN=jdias-mo/O=42/OU=42Porto/C=PT/ST=Porto/L=Porto/emailAddress=jdias-mo@student.42porto.com"
 COPY conf/default.conf /etc/nginx/conf.d/default.conf
@@ -199,3 +199,12 @@ Optimize for the Docker build cache: update && install in the same step<br>
 Remove unnecessary tools for added security<br>
 Build the smallest image possible<br>
 Properly tag images: not using the default latest tag
+
+#### Useful commands
+```docker ps```
+```docker rm -f $(docker ps -aq)```
+```docker images```
+```docker image prune```
+```docker inspect```
+```docker networks```
+```docker compose up --build```
