@@ -99,7 +99,7 @@ server {
 
     index index.php index.html index.htm;
 
-    root /var/www/html;
+    root /var/www/html/wordpress;
 
     ssl_certificate /etc/nginx/ssl/jdias-mo.crt;
     ssl_certificate_key /etc/nginx/ssl/jdias-mo.key;
