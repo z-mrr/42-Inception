@@ -140,7 +140,7 @@ services:
   nginx:
     build: ./nginx
     container_name: nginx
-    image: nginx
+    image: nginx:1.0.0
     ports:
       - "443:443"
     depends_on:
@@ -157,7 +157,7 @@ services:
   wordpress:
     build: ./wordpress
     container_name: wordpress
-    image: wordpress
+    image: wordpress:1.0.0
     expose:
       - "9000"
     env_file:
@@ -171,7 +171,7 @@ services:
   mariadb:
     build: ./mariadb
     container_name: mariadb
-    image: mariadb
+    image: mariadb:1.0.0
     expose:
       - "3306"
     env_file:
@@ -192,3 +192,10 @@ networks:
 ```
 
 ```
+### Best practices for building containers
+One app per container<br>
+PID1: using ENTRYPOINT, CMD in Dockerfile or using a shell script to prepare the environment and launching the main process<br>
+Optimize for the Docker build cache: update && install in the same step<br>
+Remove unnecessary tools for added security<br>
+Build the smallest image possible<br>
+Properly tag images: not using the default latest tag
