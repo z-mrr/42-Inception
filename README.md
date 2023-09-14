@@ -129,7 +129,7 @@ RUN tar -zxvf latest.tar.gz
 RUN rm latest.tar.gz
 WORKDIR /var/www/html/wordpress
 RUN chown -R www-data:www-data /var/www/html/wordpress #change owner/group of the extracted files
-RUN sed -i 's/listen = /listen = 9000/c' /etc/php/7.4/fpm/pool.d/www.conf
+RUN sed -i 's/listen = /c\listen = 9000' /etc/php/7.4/fpm/pool.d/www.conf
 RUN mkdir -p /run/php #so php runs
 ENTRYPOINT php-fpm7.4 -F #run on foreground
 ```
