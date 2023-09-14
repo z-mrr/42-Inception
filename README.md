@@ -81,9 +81,7 @@ sudo sh -c 'echo "127.0.0.1 jdias-mo.42.fr" >> /etc/hosts'
 ```daemon off``` to run on the foreground as it is in a container
 ```
 FROM debian:bullseye
-RUN apt-get update
-RUN apt-get install nginx -y
-RUN apt-get install openssl -y
+RUN apt-get update && apt-get install nginx openssl -y
 RUN mkdir /etc/nginx/ssl
 RUN openssl req -x509 -nodes -days 365 -new -keyout /etc/nginx/ssl/jdias-mo.key -out /etc/nginx/ssl/jdias-mo.crt -subj "/CN=jdias-mo/O=42/OU=42Porto/C=PT/ST=Porto/L=Porto/emailAddress=jdias-mo@student.42porto.com"
 COPY conf/default.conf /etc/nginx/conf.d/default.conf
@@ -118,4 +116,79 @@ server {
         include        fastcgi_params;
     }
 }
+```
+### WordPress
+#### Dockerfile
+```
+FROM debian:bullseye
+RUN apt-get update && apt-get install -y wget php-mysqli php-fpm
+RUN mkdir -p /var/www/html
+WORKDIR /var/www/html
+RUN wget https://wordpress.org/latest.tar.gz
+RUN tar -zxvf latest.tar.gz
+RUN rm latest.tar.gz
+WORKDIR /var/www/html/wordpress
+RUN chown -R www-data:www-data /var/www/html/wordpress #change owner/group of the extracted files
+RUN sed -i 's/listen = \/run\/php\/php7.4-fpm.sock/listen = 9000/g' /etc/php/7.4/fpm/pool.d/www.conf
+RUN mkdir -p /run/php #so php runs
+ENTRYPOINT php-fpm7.4 -F #run on foreground
+```
+#### ```wp-conf.php```
+### Docker Compose
+```
+services:
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    image: nginx
+    ports:
+      - "443:443"
+    depends_on:
+      - wordpress
+      - mariadb
+    env_file:
+      - .env
+    restart: always
+    networks:
+      - inception
+    volumes:
+      - wordpress:/var/www/html
+
+  wordpress:
+    build: ./wordpress
+    container_name: wordpress
+    image: wordpress
+    expose:
+      - "9000"
+    env_file:
+      - .env
+    #restart: always
+    networks:
+      - inception
+    volumes:
+      - wordpress:/var/www/html
+
+  mariadb:
+    build: ./mariadb
+    container_name: mariadb
+    image: mariadb
+    expose:
+      - "3306"
+    env_file:
+      - .env
+    #restart: always
+    networks:
+      - inception
+
+volumes:
+  wordpress:
+
+networks:
+  inception:
+    name: inception
+    driver: bridge
+```
+#### .env file
+```
+
 ```
