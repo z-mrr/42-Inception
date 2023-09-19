@@ -81,34 +81,30 @@ sudo sh -c 'echo "127.0.0.1 jdias-mo.42.fr" >> /etc/hosts'
 ```daemon off``` to run on the foreground as it is in a container
 ```
 FROM debian:bullseye
-RUN apt-get update && apt-get -y install nginx openssl
-RUN mkdir /etc/nginx/ssl
-RUN openssl req -x509 -nodes -days 365 -new -keyout /etc/nginx/ssl/jdias-mo.key -out /etc/nginx/ssl/jdias-mo.crt -subj "/CN=jdias-mo/O=42/OU=42Porto/C=PT/ST=Porto/L=Porto/emailAddress=jdias-mo@student.42porto.com"
-COPY conf/default.conf /etc/nginx/conf.d/default.conf
-ENTRYPOINT nginx -g "daemon off;"
+RUN apt-get update && apt-get install -y nginx openssl
+RUN mkdir /etc/nginx/ssl && openssl req -x509 -nodes -days 365 -new -keyout /etc/nginx/ssl/jdias-mo.key -out /etc/nginx/ssl/jdias-mo.crt -subj "/CN=jdias-mo/O=42/OU=42Porto/C=PT/ST=Porto/L=Porto/emailAddress=jdias-mo@student.42porto.com"
+COPY ./jdias-mo.42.fr /etc/nginx/sites-available/jdias-mo.42.fr
+RUN ln -s /etc/nginx/sites-available/jdias-mo.42.fr /etc/nginx/sites-enabled/
+CMD nginx -g "daemon off;"                       
 ```
-#### Conf file
+#### Conf file jdias-mo.42.fr
+Will be on ```/etc/nginx/sites-available/``` and linked to ```/etc/nginx/sites-enables```<br>
 ```TLSv1.3``` only
 ```
 server {
     listen       443 ssl;
     listen  [::]:443 ssl;
+
     server_name  jdias-mo.42.fr;
 
     index index.php index.html index.htm;
 
-    root /var/www/html/wordpress;
+    root /var/www/html/jdias-mo.42.fr;
 
     ssl_certificate /etc/nginx/ssl/jdias-mo.crt;
     ssl_certificate_key /etc/nginx/ssl/jdias-mo.key;
     ssl_protocols TLSv1.3;
 
-    #every other uri
-    location / {
-        try_files $uri $uri/ /index.php?$args;
-    }
-
-    #uri ending in .php
     location ~ \.php$ {
         fastcgi_pass   wordpress:9000;
         fastcgi_index  index.php;
@@ -122,16 +118,11 @@ server {
 ```
 FROM debian:bullseye
 RUN apt-get update && apt-get install -y wget php-mysqli php-fpm
-RUN mkdir -p /var/www/html
-WORKDIR /var/www/html
-RUN wget https://wordpress.org/latest.tar.gz
-RUN tar -zxvf latest.tar.gz
-RUN rm latest.tar.gz
-WORKDIR /var/www/html/wordpress
-RUN chown -R www-data:www-data /var/www/html/wordpress #change owner/group of the extracted files
-RUN sed -i '/listen = /c\listen = 9000' /etc/php/7.4/fpm/pool.d/www.conf
-RUN mkdir -p /run/php #so php runs
-ENTRYPOINT php-fpm7.4 -F #run on foreground
+RUN sed -i '/listen = /c\listen = 9000' /etc/php/7.4/fpm/pool.d/www.conf && mkdir -p /run/php
+WORKDIR /var/www/html/jdias-mo.42.fr/
+RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -O /usr/local/bin/wp && chmod +x /usr/local/bin/wp
+RUN wp core download --allow-root
+CMD php-fpm7.4 -F
 ```
 #### ```wp-conf.php```
 ### Docker Compose
@@ -145,14 +136,11 @@ services:
       - "443:443"
     depends_on:
       - wordpress
-      - mariadb
-    env_file:
-      - .env
     restart: always
     networks:
       - inception
     volumes:
-      - wordpress:/var/www/html
+      - wp-data:/var/www/html/jdias-mo.42.fr/
 
   wordpress:
     build: ./wordpress
@@ -160,13 +148,15 @@ services:
     image: wordpress:1.0.0
     expose:
       - "9000"
+    depends_on:
+      - mariadb
     env_file:
       - .env
-    #restart: always
+    restart: always
     networks:
       - inception
     volumes:
-      - wordpress:/var/www/html
+      - wp-data:/var/www/html/jdias-mo.42.fr/
 
   mariadb:
     build: ./mariadb
@@ -176,12 +166,27 @@ services:
       - "3306"
     env_file:
       - .env
-    #restart: always
+    restart: always
     networks:
       - inception
+    volumes:
+      - db-data:/var/lib/mysql
 
 volumes:
-  wordpress:
+  wp-data:
+    name: wp-data
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/jdias-mo/data/wp-data
+      o: bind
+  db-data:
+    name: db-data
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/jdias-mo/data/db-data
+      o: bind
 
 networks:
   inception:
