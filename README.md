@@ -117,33 +117,65 @@ server {
 #### Dockerfile
 ```
 FROM debian:bullseye
-RUN apt-get update && apt-get install -y wget php-mysqli php-fpm
-RUN sed -i '/listen = /c\listen = 9000' /etc/php/7.4/fpm/pool.d/www.conf && mkdir -p /run/php
+RUN apt-get update && \
+	apt-get install -y wget php-mysqli php-fpm
+RUN sed -i '/listen = /c\listen = 9000' /etc/php/7.4/fpm/pool.d/www.conf && \
+	mkdir -p /run/php
 WORKDIR /var/www/html/jdias-mo.42.fr/
-RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -O /usr/local/bin/wp && chmod +x /usr/local/bin/wp
-RUN wp core download --allow-root
+RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -O /usr/local/bin/wp && \
+	chmod +x /usr/local/bin/wp
+RUN wp core download --allow-root && \
+	sed -i "s/username_here/$DB_USER/g" wp-config-sample.php && \
+	sed -i "s/password_here/$DB_PASSWORD/g" wp-config-sample.php && \
+	sed -i "s/localhost/$DB_HOSTNAME/g" wp-config-sample.php && \
+	sed -i "s/database_name_here/$DB_NAME/g" wp-config-sample.php && \
+	cp wp-config-sample.php wp-config.php
+#COPY ./tools/wordpress-entrypoint.sh /scripts/wordpress-entrypoint.sh
+#RUN chmod +x /scripts/wordpress-entrypoint.sh
+#ENTRYPOINT /scripts/wordpress-entrypoint.sh
 CMD php-fpm7.4 -F
+
 ```
-#### ```wp-conf.php```
+### MariaDB
+#### Dockerfile
+```
+FROM debian:bullseye
+RUN apt-get update -y && \
+	apt-get install -y mariadb-server
+RUN mkdir -p /var/run/mysqld && \
+	chown -R mysql:mysql /var/run/mysqld && \
+	chmod 777 /var/run/mysqld
+COPY ./conf/my.cnf /etc/mysql/my.cnf
+RUN chmod 744 /etc/mysql/my.cnf
+COPY ./tools/mariadb-entrypoint.sh /scripts/
+RUN chmod +x /scripts/mariadb-entrypoint.sh
+#ENTRYPOINT /scripts/mariadb-entrypoint.sh
+#WORKDIR /var/lib/mysql
+#CMD mysqld_safe
+```
+### Entrypoint script
+```
+
+```
 ### Docker Compose
 ```
 services:
   nginx:
-    build: ./nginx
+    build: ./requirements/nginx
     container_name: nginx
     image: nginx:1.0.0
     ports:
       - "443:443"
     depends_on:
       - wordpress
-    restart: always
+    #restart: always
     networks:
       - inception
     volumes:
-      - wp-data:/var/www/html/jdias-mo.42.fr/
+      - wp-data:/var/www/html/jdias-mo.42.fr
 
   wordpress:
-    build: ./wordpress
+    build: ./requirements/wordpress
     container_name: wordpress
     image: wordpress:1.0.0
     expose:
@@ -152,21 +184,21 @@ services:
       - mariadb
     env_file:
       - .env
-    restart: always
+    #restart: always
     networks:
       - inception
     volumes:
-      - wp-data:/var/www/html/jdias-mo.42.fr/
+      - wp-data:/var/www/html/jdias-mo.42.fr
 
   mariadb:
-    build: ./mariadb
+    build: ./requirements/mariadb
     container_name: mariadb
     image: mariadb:1.0.0
     expose:
       - "3306"
     env_file:
       - .env
-    restart: always
+    #restart: always
     networks:
       - inception
     volumes:
@@ -195,7 +227,11 @@ networks:
 ```
 #### .env file
 ```
-
+DB_NAME=wordpressdb
+DB_USER=jdias-mo
+DB_PASSWORD=userpw
+DB_HOST=mariadb
+DB_ROOT_PASSWORD=rootpw
 ```
 ### Best practices for building containers
 One app per container<br>
