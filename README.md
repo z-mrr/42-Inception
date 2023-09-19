@@ -81,11 +81,12 @@ sudo sh -c 'echo "127.0.0.1 jdias-mo.42.fr" >> /etc/hosts'
 ```daemon off``` to run on the foreground as it is in a container
 ```
 FROM debian:bullseye
-RUN apt-get update && apt-get install -y nginx openssl
+RUN apt-get update && \
+	apt-get install -y nginx openssl
 RUN mkdir /etc/nginx/ssl && openssl req -x509 -nodes -days 365 -new -keyout /etc/nginx/ssl/jdias-mo.key -out /etc/nginx/ssl/jdias-mo.crt -subj "/CN=jdias-mo/O=42/OU=42Porto/C=PT/ST=Porto/L=Porto/emailAddress=jdias-mo@student.42porto.com"
-COPY ./jdias-mo.42.fr /etc/nginx/sites-available/jdias-mo.42.fr
+COPY ./conf/jdias-mo.42.fr /etc/nginx/sites-available/
 RUN ln -s /etc/nginx/sites-available/jdias-mo.42.fr /etc/nginx/sites-enabled/
-CMD nginx -g "daemon off;"                       
+CMD ["nginx", "-g", "daemon off;"]                       
 ```
 #### Conf file jdias-mo.42.fr
 Will be on ```/etc/nginx/sites-available/``` and linked to ```/etc/nginx/sites-enables```<br>
@@ -123,8 +124,8 @@ RUN sed -i '/listen = /c\listen = 9000' /etc/php/7.4/fpm/pool.d/www.conf && \
 	mkdir -p /run/php
 WORKDIR /var/www/html/jdias-mo.42.fr/
 RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -O /usr/local/bin/wp && \
-	chmod +x /usr/local/bin/wp
-RUN wp core download --allow-root && \
+	chmod +x /usr/local/bin/wp && \
+	wp core download --allow-root && \
 	sed -i "s/username_here/$DB_USER/g" wp-config-sample.php && \
 	sed -i "s/password_here/$DB_PASSWORD/g" wp-config-sample.php && \
 	sed -i "s/localhost/$DB_HOSTNAME/g" wp-config-sample.php && \
@@ -133,7 +134,7 @@ RUN wp core download --allow-root && \
 #COPY ./tools/wordpress-entrypoint.sh /scripts/wordpress-entrypoint.sh
 #RUN chmod +x /scripts/wordpress-entrypoint.sh
 #ENTRYPOINT /scripts/wordpress-entrypoint.sh
-CMD php-fpm7.4 -F
+CMD ["php-fpm7.4", "-F"]
 
 ```
 ### MariaDB
@@ -151,7 +152,7 @@ COPY ./tools/mariadb-entrypoint.sh /scripts/
 RUN chmod +x /scripts/mariadb-entrypoint.sh
 #ENTRYPOINT /scripts/mariadb-entrypoint.sh
 #WORKDIR /var/lib/mysql
-#CMD mysqld_safe
+#CMD ["mysqld_safe"]
 ```
 ### Entrypoint script
 ```
