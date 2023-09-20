@@ -1,0 +1,18 @@
+server {
+    listen       443 ssl;
+    listen  [::]:443 ssl;
+    server_name  jdias-mo.42.fr;
+    index index.php index.html index.htm;
+    root /var/www/html/jdias-mo.42.fr;
+
+    ssl_certificate /etc/nginx/ssl/jdias-mo.crt;
+    ssl_certificate_key /etc/nginx/ssl/jdias-mo.key;
+    ssl_protocols TLSv1.3;
+
+    location ~ \.php$ {
+        fastcgi_pass   wordpress:9000;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+}

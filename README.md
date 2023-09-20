@@ -71,10 +71,13 @@ stat /home/user/.docker/config.json: permission denied```
 ```
 sudo rm -rf ~/.docker/
 ```
-### NGINX
-Domain name
+### Domain name
 ```
 sudo sh -c 'echo "127.0.0.1 jdias-mo.42.fr" >> /etc/hosts'
+```
+### Volume dir
+```
+mkdir -p /home/jdias-mo/data/wp /home/jdias-mo/data/db
 ```
 ### Best practices for building containers
 One app per container<br>
@@ -85,16 +88,15 @@ Build the smallest image possible<br>
 Properly tag images: not using the default latest tag
 
 #### Useful commands
-```docker ps```
-```docker rm -f $(docker ps -aq)```
-```docker images```
-```docker image prune```
-```docker inspect```
-```docker networks```
 ```docker compose up --build```
+```docker compose build --no-cache```
+```docker ps```
+```docker images```
+```docker rm -f $(docker ps -aq)```
 ```docker rmi```
-```docker network ls```
+```docker image prune```
+```docker network```
+```docker volume```
 ```docker inspect```
 ```docker logs```
-```docker volume```
 ```SELECT user, host FROM mysql.user;```
