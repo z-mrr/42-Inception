@@ -1,6 +1,6 @@
 NAME =		inception
+
 YML =		./srcs/docker-compose.yml
-ENV_FILE = srcs/.env
 
 all:		build $(NAME)
 
@@ -18,8 +18,7 @@ check-volumes:
 
 check-env:
 	@if [ ! -f ./srcs/.env ]; then \
-		echo "Inception: Error: Missing .env file in srcs/"; \
-		exit 1; \
+		cp ./srcs/requirements/tools/.env-setup ./srcs/.env; \
 	fi
 
 build:		check-prerequisites
@@ -52,7 +51,7 @@ clean:
 			@docker compose -f $(YML) down --rmi all --volumes
 
 fclean:		clean
-			@sudo rm -rf /home/jdias-mo/data
+			@sudo rm -rf ./srcs/.env /home/jdias-mo/data
 
 re: 		fclean all
 
