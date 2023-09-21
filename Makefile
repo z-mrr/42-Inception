@@ -24,7 +24,7 @@ check-env:
 build:		check-prerequisites
 			@docker compose -f $(YML) build
 
-$(NAME):	build up
+$(NAME):	up
 		
 up:			build
 			@docker compose -f $(YML) up -d
