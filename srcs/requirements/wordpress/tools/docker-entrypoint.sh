@@ -20,7 +20,7 @@ if [ ! -f "/var/www/html/${WP_URL}/wp-config.php" ]; then
 	sed -i "s/localhost/${DB_HOST}/g" wp-config.php
 	sed -i "s/database_name_here/${DB_NAME}/g" wp-config.php
 	#install wp with following config
-	wp core install --url=${WP_URL} --title=${WP_TITLE} --admin_user=${WP_USER} --admin_password=${WP_PASSWORD} --admin_email=${WP_EMAIL} --skip-email --allow-root
+	wp core install --url=${WP_URL} --title=${WP_TITLE} --admin_user=${WP_ADMIN} --admin_password=${WP_PASSWORD} --admin_email=${WP_EMAIL} --skip-email --allow-root
 else
 	echo "WordPress already installed"
 fi
