@@ -1,9 +1,9 @@
+# if no .env file is provided in srcs/, this one will be used
 DB_NAME=wordpressdb
 DB_USER=jdias-mo
 DB_PASSWORD=userpw
 DB_HOST=mariadb
 DB_ROOT_PASSWORD=rootpw
-
 WP_TITLE=Inception
 WP_ADMIN=jdias-mo
 WP_PASSWORD=userpw

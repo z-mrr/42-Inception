@@ -7,7 +7,7 @@ all:		build $(NAME)
 check-prerequisites: check-hosts check-volumes check-env
 
 check-hosts:
-	@if ! grep -q "27.0.0.1 jdias-mo.42.fr" /etc/hosts; then \
+	@if ! grep -q "127.0.0.1 jdias-mo.42.fr" /etc/hosts; then \
 		sudo sh -c 'echo "127.0.0.1 jdias-mo.42.fr" >> /etc/hosts'; \
 	fi
 
@@ -18,7 +18,7 @@ check-volumes:
 
 check-env:
 	@if [ ! -f ./srcs/.env ]; then \
-		cp ./srcs/requirements/tools/.env-setup ./srcs/.env; \
+		cp ./srcs/requirements/tools/env-setup ./srcs/.env; \
 	fi
 
 build:		check-prerequisites
@@ -51,7 +51,7 @@ clean:
 			@docker compose -f $(YML) down --rmi all --volumes
 
 fclean:		clean
-			@sudo rm -rf ./srcs/.env /home/jdias-mo/data
+			@sudo rm -rf /home/jdias-mo/data; 
 
 re: 		fclean all
 
