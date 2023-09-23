@@ -57,11 +57,3 @@ fclean:		clean
 re: 		fclean all
 
 .PHONY:		all up down start stop rm rmi rmv clean fclean re
-
-
-
-
-
-
-
-
