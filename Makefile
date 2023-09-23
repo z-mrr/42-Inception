@@ -18,7 +18,8 @@ check-volumes:
 
 check-env:
 	@if [ ! -f ./srcs/.env ]; then \
-		cp ./srcs/requirements/tools/env-setup ./srcs/.env; \
+		echo "Error: Inception: Missing .env file in srcs/"; \
+		exit 1; \
 	fi
 
 build:		check-prerequisites
